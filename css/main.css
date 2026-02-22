@@ -1,22 +1,26 @@
 /*Any student-written CSS should go in this file.*/
+
+/* Grid container: 700x700px max, centered */
 .display {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    border: none !important; /* Remove framework border */
+    border: none !important;
 }
 
+/* Each row: no gap so hitboxes are seamless */
 .grid-row {
     display: flex;
-    gap: 15px;
+    gap: 0;
     justify-content: center;
-    margin-bottom: 15px;
+    margin-bottom: 0;
 }
 
+/* Button fills entire cell (700/4 = 175px), hitbox covers full area */
 .grid-button {
-    width: 70px;
-    height: 70px;
-    background-color: #dcdcdc;
+    width: 85px;
+    height: 85px;
+    background: transparent;
     border: none;
     font-size: 16px;
     display: flex;
@@ -25,4 +29,22 @@
     cursor: pointer;
     font-family: sans-serif;
     color: #000;
+    position: relative;
+    z-index: 1;
+    padding: 0;
+    margin: 0;
+}
+
+/* Visible gray square drawn as a pseudo-element, centered in the cell */
+.grid-button::before {
+    content: "";
+    position: absolute;
+    width: 70px;
+    height: 70px;
+    background-color: #dcdcdc;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: -1;
+    pointer-events: none;
 }
