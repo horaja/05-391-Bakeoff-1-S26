@@ -1,1 +1,28 @@
 /*Any student-written CSS should go in this file.*/
+.display {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border: none !important; /* Remove framework border */
+}
+
+.grid-row {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+
+.grid-button {
+    width: 70px;
+    height: 70px;
+    background-color: #dcdcdc;
+    border: none;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-family: sans-serif;
+    color: #000;
+}

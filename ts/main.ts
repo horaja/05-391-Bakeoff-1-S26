@@ -70,6 +70,7 @@ function makeSquaresUsingHTMLButtons(trial: Trial) {
 	for (let rowNumber=0; rowNumber<squares.length; rowNumber++) {
 		// Create a div to be sub-container for just this row.
 		let row : HTMLDivElement = document.createElement("div");
+		row.classList.add("grid-row");
 		
 		// ...and the inner loop goes through the squares in a row.
 		for (let columnNumber=0; columnNumber<squares[rowNumber].length; columnNumber++) {
@@ -83,8 +84,8 @@ function makeSquaresUsingHTMLButtons(trial: Trial) {
 			// Add the square's ID as the text of the button
 			button.innerText = ""+squareID; // the empty string ("") is added to the squareID to convert it from a number (as it is stored in the squareData) to a string (which is what is needed for an innerText property). This is not strictly necessary in plain JavaScript -- JS will do the conversion implicitly -- but TypeScript does care, and I find it helpful to my own understanding/debugging to be careful about this kind of thing.
 
-			// style the button to have the square's color as its background color.
-			button.style = "background: "+squareColor+";";
+			// Add a class to apply our uniform CSS styling
+			button.classList.add("grid-button");
 
 			// Very important: we need to be able to tell the trial engine when this button has been clicked! Since we are making these as their own HTML elements, we can add a click listener to each. The handler will report the click to the trial engine using the trial.submitClick method. The handler function is being defined in-place (anonymously) right in the addEventListener method call.
 			button.addEventListener("click", () => {
