@@ -16,7 +16,7 @@
     margin-bottom: 0;
 }
 
-/* Button fills entire cell (700/4 = 175px), hitbox covers full area */
+/* Button fills entire cell, hitbox covers full area */
 .grid-button {
     width: 85px;
     height: 85px;
@@ -33,6 +33,7 @@
     z-index: 1;
     padding: 0;
     margin: 0;
+    transition: color 0.15s ease;
 }
 
 /* Visible gray square drawn as a pseudo-element, centered in the cell */
@@ -42,9 +43,20 @@
     width: 70px;
     height: 70px;
     background-color: #dcdcdc;
+    border: 1.5px solid #999;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: -1;
     pointer-events: none;
+    transition: background-color 0.15s ease;
+}
+
+/* Hover: darken square, lighten text */
+.grid-button:hover {
+    color: #fff;
+}
+
+.grid-button:hover::before {
+    background-color: #333;
 }
