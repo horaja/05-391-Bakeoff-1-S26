@@ -78,6 +78,13 @@ window.addEventListener("load", function (e) {
             setSelectedSquare(sqaureID);
             }
     });
+    
+    document.addEventListener("click", function (e) {
+    if (keyboardMode && selectedSquareID !== null) {
+        // submit whatever square is currently selected
+        trial.submitClick(selectedSquareID);
+    }
+});
 });
 
 
@@ -148,14 +155,6 @@ function makeSquaresUsingHTMLButtons(trial) {
                 // Depending on your programming background (which language[s] you are more familiar with), you may be suspicious about using the "squareID" variable in this click handler function, since you may have noticed that it is only declared within this inner loop and its value will be different each time through the loop.
                 // However, *will* work in JS, using a language feature called a "closure": because the variable exists with a value at the time that the function is defined (right here, within this instance of the per-square loop), it will continuing existing within that function even if alternate-universe versions of it are created the other times through the loop. MDN's explanation (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Closures) is a little long/confusing IMO but here's a tiktok: https://www.tiktok.com/@snack.js/video/7606405733172694292
                 // P.S. One of the "subtle differences between var and let" that I mentioned in class is how they work with closures -- see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Closures#creating_closures_in_loops_a_common_mistake for details.
-                
-                //if keyboard mode is on, we treat the click as click on selected square, if any, otherwise we ignore it.
-                if (keyboardMode) {
-                    if (selectedSquareID !== null){
-                        trial.submitClick(selectedSquareID);
-                    }
-                    return;
-                }
                 trial.submitClick(squareID);
             });
             // then, add this button to the row
