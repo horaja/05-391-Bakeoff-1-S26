@@ -1,5 +1,12 @@
 // This constant sets the number of tasks per trial. You can change it while you are experimenting, but it should be set back to 10 for the actual Bakeoff.
-var tasksLength = 3;
+var tasksLength = 10;
+
+// just a variable to toggle keybord mode on/off. If this is true, the mouse movement is ignored and you use keyboard input to select a square.
+var keyboardMode = false;
+// this variable is to hold the current square selection in keyboard mode.
+var selectedSquareID = null;
+// this variable is just to hold the reference for each square, mapping each int/squareID to the corresponding HTML element.
+var squareIDToButton= {};
 // constants relating to the number of squares and the size of the canvas are defined in the framework, so you can refer to these (but should not change their values):
 // canvasSize is the size in pixels of the biggest area of screen you may use (regardless of whether you are using the Canvas itself, an SVG, or a div.)
 // As in HW4, it never hurts to put any code that requires access to page elements inside the handler for the load event.
@@ -19,7 +26,79 @@ window.addEventListener("load", function (e) {
     makeSquaresUsingHTMLButtons(trial);
     // makeSquaresUsingCanvasAPI(trial);	
     // makeSquaresUsingSVG(trial);	// if you un-comment this one, you also need to un-comment the line `<script src="./js/svg.js"></script>` near the end of the index.html (this is the only change you are allowed to make to the index.htm)
+
+    //adding an event listener for keyboard input
+    document.addEventListener("keydown", function (e) {
+        //toggle keyboard mode on/off
+        if (e.code === "Space") {
+            e.preventDefault(); //preventing the default behvior of spacebar
+            
+            keyboardMode = !keyboardMode;
+            
+            document.body.classList.toggle("keyboard-mode", keyboardMode); //change the square colors when in keyboard mode.
+            
+            if (!keyboardMode) {
+                clearSelection();
+            }
+            return;
+        }
+        
+
+        if (!keyboardMode) {
+            return; //if keyboard mode is not on, we ignore the key press.
+        }
+
+        //just a map to convert from key presses to intended square IDs.
+        //We can change the key values to whatever, this is just  my choice.
+        const keymap = {
+            "1": 1,
+            "2": 2,
+            "3": 3,
+            "4": 4,
+            "5": 5,
+            "6": 6,
+            "7": 7,
+            "8": 8,
+            "9": 9,
+            "0": 10,
+            "a": 11,
+            "b": 12,
+            "c": 13,
+            "d": 14,
+            "e": 15,
+            "f": 16,
+
+        };
+
+        const key = e.key.toLowerCase();
+        const sqaureID = keymap[key] ?? null;
+
+        //if the key pressed is in our keymap and has a corresponding square in buttonIDToSquare, then we select that square.
+        if (sqaureID !== null && squareIDToButton[sqaureID]) {
+            setSelectedSquare(sqaureID);
+            }
+    });
 });
+
+
+//Some helper functions for keyboard mode
+function setSelectedSquare(squareID) {
+    clearSelection();
+
+    selectedSquareID = squareID;
+    let button = squareIDToButton[squareID];
+    if (button) {
+        button.classList.add("keyboard-mode-selected");
+    }
+}
+
+function clearSelection() {
+    if (selectedSquareID !== null && squareIDToButton[selectedSquareID]) {
+        squareIDToButton[selectedSquareID].classList.remove("keyboard-mode-selected");
+    }
+    selectedSquareID = null;
+}
+
 // =============================================================
 // ========== How to make a grid of clickable elements =========
 // =============================================================
@@ -62,11 +141,21 @@ function makeSquaresUsingHTMLButtons(trial) {
             button.innerText = "" + squareID; // the empty string ("") is added to the squareID to convert it from a number (as it is stored in the squareData) to a string (which is what is needed for an innerText property). This is not strictly necessary in plain JavaScript -- JS will do the conversion implicitly -- but TypeScript does care, and I find it helpful to my own understanding/debugging to be careful about this kind of thing.
             // Add a class to apply our uniform CSS styling
             button.classList.add("grid-button");
+            // add the button referece to the squareIDtoButton map so that we can access it quicly later.
+            squareIDToButton[squareID] = button;
             // Very important: we need to be able to tell the trial engine when this button has been clicked! Since we are making these as their own HTML elements, we can add a click listener to each. The handler will report the click to the trial engine using the trial.submitClick method. The handler function is being defined in-place (anonymously) right in the addEventListener method call.
             button.addEventListener("click", function () {
                 // Depending on your programming background (which language[s] you are more familiar with), you may be suspicious about using the "squareID" variable in this click handler function, since you may have noticed that it is only declared within this inner loop and its value will be different each time through the loop.
                 // However, *will* work in JS, using a language feature called a "closure": because the variable exists with a value at the time that the function is defined (right here, within this instance of the per-square loop), it will continuing existing within that function even if alternate-universe versions of it are created the other times through the loop. MDN's explanation (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Closures) is a little long/confusing IMO but here's a tiktok: https://www.tiktok.com/@snack.js/video/7606405733172694292
                 // P.S. One of the "subtle differences between var and let" that I mentioned in class is how they work with closures -- see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Closures#creating_closures_in_loops_a_common_mistake for details.
+                
+                //if keyboard mode is on, we treat the click as click on selected square, if any, otherwise we ignore it.
+                if (keyboardMode) {
+                    if (selectedSquareID !== null){
+                        trial.submitClick(selectedSquareID);
+                    }
+                    return;
+                }
                 trial.submitClick(squareID);
             });
             // then, add this button to the row
@@ -80,6 +169,7 @@ function makeSquaresUsingHTMLButtons(trial) {
         grid.appendChild(row);
     }
 }
+
 // Here is a version using the Canvas API. "canvas" is a built-in HTML element type that has a special set of features such that you can draw raster images directly into it using functions like "fillRect". If you are familiar with Processing, you will find that it has very similar capabilities. Here's the main MDN documentation page:
 // https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API
 // ...and I do recommend their tutorial:

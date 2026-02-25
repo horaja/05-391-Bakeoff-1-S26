@@ -60,3 +60,14 @@
 .grid-button:hover::before {
     background-color: #333;
 }
+
+/*keyboad mode: all squares become red in color*/
+body.keyboard-mode .grid-button::before {
+    background-color: #b53030;
+}
+
+/*keyboard mode selected square: green in color*/
+body.keyboard-mode .grid-button.keyboard-mode-selected::before {
+    background-color: #30b543;
+}
+
